@@ -1,6 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-const mysql = require('mysql');
+import express from 'express';
+import cors from 'cors';
+import mysql from 'mysql';
 
 const app = express();
 
@@ -10,7 +10,7 @@ const pool = mysql.createPool({
     connectionLimit : 10,
     host: 'localhost',
     user: 'root',
-    password: '******', // Update password
+    password: 'TempPassword', // Update password
     database: 'swole'
 });
 
