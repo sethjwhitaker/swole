@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import mysql from 'mysql';
+import bcrypt from 'bcrypt';
+
 
 const app = express();
 
@@ -39,10 +41,14 @@ app.get('/users', (req, res) => {
     });
 });
 
-app.get('/users/add', (req, res) => {
-    const {first_name, last_name, email_address, password_hash} = req.query;
-    const INSERT_USER_QUERY = `INSERT INTO users (first_name, last_name, email_address, password_hash) 
-        VALUES(${first_name}, ${last_name}, ${email_address}, ${password_hash})`;
+app.get('/users/add', async (req, res) => {
+    const {first_name, last_name, email_address, password} = req.query;
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    const INSERT_USER_QUERY = `INSERT INTO users (first_name, last_name, email_address, password_hash, password_salt, password_hash_algorithm) 
+        VALUES('${first_name}', '${last_name}', '${email_address}', '${hash}', '${salt}', 'bcrypt')`;
     
     pool.query(INSERT_USER_QUERY, (err, results) => {
         if(err) {

@@ -16,18 +16,15 @@ form {
   width: 60%;
   margin-left: auto;
   margin-right: auto;
-  display: grid;
-  grid-gap: 1.5em;
-  grid-template-rows: auto;
-  grid-template-columns: 10em 1fr;
 }
 
 label {
-  text-align: right;
+  display: block;
+  margin: 1em;
 }
 
-button {
+/*input[type="submit"] {
   width: 50%;
   grid-column: 2 / 3;
 
-}
+}*/

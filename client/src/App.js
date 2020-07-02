@@ -1,6 +1,11 @@
 import React, { Component }from 'react';
 import './App.css';
 
+// TODO: Make form a controlled component
+// TODO: Separate current code into a Register component
+// TODO: Create a Login component
+// TODO: Work on formatting
+
 class App extends Component {
 
   constructor(props) {
@@ -29,7 +34,7 @@ class App extends Component {
     const { user } = this.state;
 
     try {
-      await fetch(`http://localhost:8080/users/add?first_name='${user.first_name}'&last_name='${user.last_name}'&email_address='${user.email}'&password_hash='password'`);
+      await fetch(`http://localhost:8080/users/add?first_name=${user.first_name}&last_name=${user.last_name}&email_address=${user.email}&password=${user.password}`);
       await this.getUsers();
     } catch(e) {
       console.log(e);
@@ -43,37 +48,55 @@ class App extends Component {
       <div className="App">
       <header className="App-header">
         <h1>
-          This is the Swole Fitness-Tracker App
+          Register
         </h1>
         <ul>
         {users.map(u => <li key={u.user_id}>
-            {u.first_name} {u.last_name}
+            Name: {u.first_name} {u.last_name} | Email: {u.email_address}
           </li>
         )}
         </ul>
-        <form> {/*TODO: Change to fully controlled form*/}
-          <label htmlFor="user-first-name">First Name: </label>
-          <input 
-            id="user-first-name"
-            value={user.first_name}
-            onChange={e => this.setState({user: {...user, first_name: e.target.value}})}
+        <form onSubmit={e=> this.addUser()}>
+          <label>
+            First Name: 
+            <input 
+              type="text"
+              value={user.first_name}
+              onChange={e => this.setState({user: {...user, first_name: e.target.value}})}
+            ></input>
+          </label>
+          
+          <label>
+            Last Name: 
+            <input 
+              type="text"
+              value={user.last_name}
+              onChange={e => this.setState({user: {...user, last_name: e.target.value}})}
           ></input>
+          </label>
+          
 
-          <label htmlFor="user-last-name">Last Name: </label>
-          <input 
-            id="user-last-name"
-            value={user.last_name}
-            onChange={e => this.setState({user: {...user, last_name: e.target.value}})}
-          ></input>
+          <label>
+            Email:
+            <input 
+              type="email"
+              value={user.email}
+              onChange={e => this.setState({user: {...user, email: e.target.value}})}
+            ></input>
+          </label>
+           
 
-          <label htmlFor="user-email">Email: </label>
-          <input 
-            id="user-email"
-            type="user-email"
-            value={user.email}
-            onChange={e => this.setState({user: {...user, email: e.target.value}})}
-          ></input> 
-          <button onClick={e => this.addUser()}>Submit</button>
+          <label>
+            Password:
+            <input 
+              type="password"
+              value={user.password}
+              onChange={e => this.setState({user: {...user, password: e.target.value}})}
+            ></input>
+          </label>
+          
+
+          <input type="submit" value="Register"></input>
         </form>
         
       </header>
