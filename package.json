@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sethjwhitaker/swole/issues"
   },
-  "homepage": "https://github.com/sethjwhitaker/swole#readme"
+  "homepage": "https://github.com/sethjwhitaker/swole#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0"
+  }
 }
