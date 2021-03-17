@@ -1,0 +1,39 @@
+body {
+    background-color: #292929;
+    color: #fff;
+    font-family: helvetica, sans-serif;
+}
+
+header {
+    height: 80px;
+    width: 100%;
+    border-bottom: solid white 2px;
+}
+
+.reg-log-nav {
+    width: 20%;
+    font-size: 1.2em;
+    float: right;
+    margin-top: 1.5em;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+nav a {
+    text-decoration: none;
+}
+
+nav :visited {
+    color: #fff;
+}
+
+nav :hover {
+    color: #ddd;
+}

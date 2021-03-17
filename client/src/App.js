@@ -1,12 +1,18 @@
 import React, { Component }from 'react';
+import {HashRouter, NavLink, Route} from 'react-router-dom';
+
+// Style
+import './App.css';
+
+// Components
+import Home from './Home';
 import Register from './Register';
 import Login from './Login';
+import Dashboard from './Dashboard';
 
-// DONE: Separate current code into a Register component
-// DONE: Create a Login component
+// TODO: Create back-end for meals and workouts
 
-// TODO: Change register to post instead of get
-// TODO: Create Login query -- look up if it should be a post or put
+// TODO: Implement JWT
 
 // TODO: Create Meals Component
 // TODO: Create add meal query
@@ -32,15 +38,34 @@ import Login from './Login';
 
 class App extends Component {
 
-  render () {
-    return (
-      <div>
-        <Register />
-        <Login />
-      </div>
-      
-    );
-  }
+    render () {
+        return (
+            <HashRouter>
+                <div className="App">
+                    <header>
+                        <nav>
+                            <div className="reg-log-nav">
+                                <ul>
+                                    <li>
+                                        <NavLink to="/login">Login</NavLink>
+                                    </li>
+                                    <li>
+                                        <NavLink to="/register">Register</NavLink>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </header>
+
+                    <Route exact path="/" component={Home} />
+                    <Route path="/dashboard" component={Dashboard} />
+                    <Route path="/register" component={Register} />
+                    <Route path="/login" component={Login} />
+                </div>
+            </HashRouter>
+    
+        );
+    }
 }
 
 export default App;

@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
+import {Redirect} from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
 class Login extends Component {
 
     constructor (props) {
         super(props);
         this.state = {
+            redirect: false,
             user: {
+                user_id: '',
+                first_name: '',
+                last_name: '',
                 email_address: '',
                 password: ''
             }
@@ -40,6 +46,19 @@ class Login extends Component {
             if(data.success) {
                 if(data.passwordAuthenticated) {
                     console.log("Login successful!");
+
+                    // decode token
+                    console.log(jwtDecode(data.token));
+
+                    this.setState({
+                        redirect: true,
+                        user: {
+                            ...user,
+                            user_id: data.userInfo.user_id,
+                            first_name: data.userInfo.first_name,
+                            last_name: data.userInfo.last_name
+                        }
+                    });
                 } else {
                     console.log("Invalid password");
                 }
@@ -54,6 +73,21 @@ class Login extends Component {
     }
 
     render () {
+
+        if(this.state.redirect) {
+            console.log(this.state);
+            return <Redirect to={{
+                pathname: "/dashboard",
+                state: {
+                    user: {
+                        user_id: this.state.user.user_id,
+                        first_name: this.state.user.first_name,
+                        last_name: this.state.user.last_name
+                    }
+                }
+            }} />
+        }
+
         const {user} = this.state;
 
         return (

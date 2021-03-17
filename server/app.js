@@ -1,14 +1,19 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import mysql from 'mysql';
 import bcrypt from 'bcrypt';
+import {JWK, JWT} from 'jose';
 
 
 const app = express();
 
 // parse application/json from post requests
 const jsonParser = bodyParser.json();
+
+// generate web key for authentication
+const key = JWK.generate('RSA');
 
 // pool of connections to sql server 
 // (Change to single connection? Why did I do it this way)
@@ -32,13 +37,13 @@ const server = app.listen(8080, () => {
 });
 
 // Not sure if I need this 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Go to /users to view data');
 });
 
 // Will definitely get rid of this. 
 // It is a nice way to view the database for testing though
-app.get('/users', (req, res) => {
+app.get('/api/users', (req, res) => {
     // Display all user info
     const SELECT_ALL_FROM_USERS_QUERY = "SELECT * FROM users;";
     pool.query(SELECT_ALL_FROM_USERS_QUERY, (err, results) => {
@@ -50,8 +55,9 @@ app.get('/users', (req, res) => {
     });
 });
 
+
 // add user to database
-app.post('/users/add', jsonParser, async (req, res) => {
+app.post('/api/register', jsonParser, async (req, res) => {
     
     console.log(req.body); // just for debugging
 
@@ -83,15 +89,18 @@ app.post('/users/add', jsonParser, async (req, res) => {
     
 });
 
-app.post('/users/login', jsonParser, async (req, res) => {
+
+// user login
+app.post('/api/login', jsonParser, async (req, res) => {
     const {email_address, password} = req.body;
 
-    const query = `SELECT password_hash FROM users WHERE email_address='${email_address}'`;
+    const query = `SELECT user_id, first_name, last_name, password_hash FROM users WHERE email_address='${email_address}'`;
     pool.query(query, async (err, results) => {
         const response = {
             success: undefined,
             error: undefined,
-            passwordAuthenticated: undefined
+            passwordAuthenticated: undefined,
+            userInfo: undefined
         }
 
         if(err) {
@@ -100,10 +109,19 @@ app.post('/users/login', jsonParser, async (req, res) => {
         } else {
             response.success = true;
             // send results of password
-            console.log(password);
-            console.log(results[0].password_hash);
             response.passwordAuthenticated = await bcrypt.compare(password, results[0].password_hash);
+            if(response.passwordAuthenticated) {
+                response.userInfo = {
+                    user_id: results[0].user_id,
+                    first_name: results[0].first_name,
+                    last_name: results[0].last_name
+                }
+                const token = JWT.sign(response.userInfo.user_id, await key);
+                res.cookie('token', token, {httpOnly: true});
+            }
         }
+        
         res.send(response);
     });
 });
+
